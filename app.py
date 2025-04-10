@@ -85,7 +85,7 @@ def create_folium_map(map_df):
         highlight_function=highlight_function,
         tooltip=folium.GeoJsonTooltip(
             fields=['ZIPCODE', 'PRICE_PER_SQFT'],
-            aliases=['PLZ:', 'Preis pro sqft ($):'],
+            aliases=['ZIP CODE:', 'Preis pro sqft ($):'],
             localize=False,
             sticky=True,
             labels=True
@@ -95,8 +95,8 @@ def create_folium_map(map_df):
     return m, nyc_zip_prices
 
 def get_zipcode_stats(zipcode):
-    """Liefert detaillierte Statistiken für eine bestimmte PLZ"""
-    # Filtern der Daten nach PLZ
+    """Liefert detaillierte Statistiken für eine bestimmte ZIP CODE"""
+    # Filtern der Daten nach ZIP CODE
     zip_data = base_data_new[base_data_new[' ZIP CODE'] == zipcode]
     
     if zip_data.empty:
@@ -163,7 +163,7 @@ def get_zipcode_stats(zipcode):
     return stats
 
 def create_zipcode_viz(zipcode):
-    """Erstellt Visualisierungen für eine bestimmte PLZ"""
+    """Erstellt Visualisierungen für eine bestimmte ZIP CODE"""
     zip_data = base_data_new[base_data_new[' ZIP CODE'] == zipcode]
     
     if zip_data.empty:
@@ -248,10 +248,10 @@ def interactive_section():
         selected_zipcode = nearest_zip['ZIPCODE']
 
     with details_col:
-        st.subheader("PLZ-Details")
+        st.subheader("ZIP Code-Details")
 
         if selected_zipcode:
-            st.write(f"Ausgewählte PLZ: **{selected_zipcode}**")
+            st.write(f"Ausgewählte ZIP CODE: **{selected_zipcode}**")
             selected_data = zip_price_data[zip_price_data['ZIPCODE'] == selected_zipcode].iloc[0]
             price = selected_data['PRICE_PER_SQFT']
             st.write(f"Durchschnittlicher Preis pro sqft: **${price:.2f}**")
@@ -313,7 +313,7 @@ def interactive_section():
                 
             
             else:
-                st.write("Keine detaillierten Daten für diese PLZ verfügbar.")
+                st.write("Keine detaillierten Daten für diese ZIP CODE verfügbar.")
                 
             # Ursprüngliches Diagramm
             fig, ax = plt.subplots(figsize=(6, 6))
@@ -331,7 +331,7 @@ def interactive_section():
             st.pyplot(fig)
 
         else:
-            st.write("Klicken Sie auf die Karte, um eine PLZ auszuwählen.")
+            st.write("Klicken Sie auf die Karte, um eine ZIP CODE auszuwählen.")
 
 def inference_section():
     global base_data_new
@@ -415,11 +415,11 @@ def show_zipcode_visualizations():
     zipcode = selected_zipcode
    
     if not zipcode:
-        st.write("Bitte wählen Sie zuerst eine PLZ aus.")
+        st.write("Bitte wählen Sie zuerst eine ZIP CODE aus.")
         return
     
     # Headline des Abschnitts
-    st.subheader(f"Visualisierungen für PLZ {zipcode}")
+    st.subheader(f"Visualisierungen für ZIP CODE {zipcode}")
     
     # Visualisierungen erstellen
     fig = create_zipcode_viz(zipcode)
@@ -437,7 +437,7 @@ def show_zipcode_visualizations():
         trend_data = pd.Series(stats['monthly_trend'])
         trend_fig, trend_ax = plt.subplots(figsize=(8, 4))
         trend_ax.plot(trend_data.index, trend_data.values, marker='o')
-        trend_ax.set_title(f'Preistrend für PLZ {zipcode}')
+        trend_ax.set_title(f'Preistrend für ZIP CODE {zipcode}')
         trend_ax.set_ylabel('Durchschnittspreis ($)')
         trend_ax.ticklabel_format(style='plain', axis='y')
         plt.xticks(rotation=45)
@@ -1052,7 +1052,7 @@ def create_dashboard():
         st.error(f"Fehler bei der Erstellung des Dashboards: {str(e)}")
         st.error("Stacktrace:", exc_info=True)
 
-st.set_page_config(layout="wide", page_title="NYC Real Estate Dashboard")
+st.set_page_config(layout="wide", page_title="HUDSON ESTATE INSIGHTS market analysis dashboard")
 
 st.markdown("""
 <style>
@@ -1066,7 +1066,7 @@ st.markdown("""
 
 col_title, col_nav = st.columns([4, 2])
 with col_title:
-    st.title("NYC Real Estate Dashboard")
+    st.title("HUDSON ESTATE INSIGHTS market analysis dashboard")
 
 with st.sidebar:
     page = option_menu("Navigation", ["Interaktive Karte", "Zahlen", "Reports & Insights"],
