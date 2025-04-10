@@ -446,27 +446,6 @@ def show_zipcode_visualizations():
     
     # Optional: Zusätzliche Visualisierungen je nach Bedarf
     
-    # Beispiel für eine weitere Visualisierung: Top Nachbarschaften in dieser PLZ
-    # In der Funktion show_zipcode_visualizations() 
-    if stats and 'neighborhoods' in stats and len(stats['neighborhoods']) > 0:
-        zip_data = base_data_new[base_data_new[' ZIP CODE'] == zipcode]
-        if not zip_data.empty and 'NEIGHBORHOOD' in zip_data.columns:
-            try:
-                neighborhood_counts = zip_data['NEIGHBORHOOD'].value_counts().head(10)
-                if len(neighborhood_counts) > 1:  # Nur anzeigen, wenn es mehr als eine Nachbarschaft gibt
-                    st.subheader("Top Nachbarschaften in dieser PLZ")
-                    nh_fig, nh_ax = plt.subplots(figsize=(8, 4))
-                    neighborhood_counts.plot(kind='bar', ax=nh_ax)
-                    nh_ax.set_title('Anzahl der Immobilien nach Nachbarschaft')
-                    nh_ax.set_ylabel('Anzahl')
-                    plt.xticks(rotation=45)
-                    plt.tight_layout()
-                    st.pyplot(nh_fig)
-            except Exception as e:
-                st.error(f"Fehler bei der Nachbarschaftsdarstellung: {str(e)}")
-
-    # Ersetze ihn mit diesem verbesserten Code:
-
     if stats and 'neighborhoods' in stats and len(stats['neighborhoods']) > 0:
         zip_data = base_data_new[base_data_new[' ZIP CODE'] == zipcode]
         if not zip_data.empty and 'NEIGHBORHOOD' in zip_data.columns:
@@ -492,7 +471,7 @@ def show_zipcode_visualizations():
                                               index=[name_mapping[idx] for idx in neighborhood_counts_norm.index])
 
                 if len(neighborhood_counts) > 1:  # Nur anzeigen, wenn es mehr als eine Nachbarschaft gibt
-                    st.subheader("Top Nachbarschaften in dieser PLZ")
+                    st.subheader("Top Nachbarschaften in diesem Zipcode")
                     nh_fig, nh_ax = plt.subplots(figsize=(8, 4))
                     neighborhood_counts.plot(kind='bar', ax=nh_ax)
                     nh_ax.set_title('Anzahl der Immobilien nach Nachbarschaft')
