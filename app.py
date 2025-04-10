@@ -834,66 +834,6 @@ def render_real_estate_analysis(container=None):
 
     return filtered_df
 
-def plot_price_per_sqft_over_time(df):
-    """
-    Erstellt ein Liniendiagramm mit dem durchschnittlichen Preis pro Quadratfuß im Zeitverlauf.
-    """
-    try:
-        # Datum in datetime umwandeln und sicherstellen, dass PRICE_PER_SQFT numerisch ist
-        df_clean = df.copy()
-        # Prüfen und korrigieren der Spaltenbezeichnungen (ggf. mit führenden Leerzeichen)
-        price_col = 'PRICE_PER_SQFT' if 'PRICE_PER_SQFT' in df_clean.columns else ' PRICE_PER_SQFT'
-        date_col = 'SALE DATE' if 'SALE DATE' in df_clean.columns else ' SALE DATE'
-        
-        # Konvertierungen mit Fehlerbehandlung
-        df_clean['SALE_DATE'] = pd.to_datetime(df_clean[date_col], errors='coerce')
-        df_clean['PRICE_PER_SQFT'] = pd.to_numeric(df_clean[price_col], errors='coerce')
-        
-       
-        # NaN-Werte filtern
-        df_clean = df_clean.dropna(subset=['SALE_DATE', 'PRICE_PER_SQFT'])
-        
-        # Prüfen ob noch Daten vorhanden sind
-        if len(df_clean) == 0:
-            st.error("Keine gültigen Daten für die Visualisierung verfügbar")
-            # Leeres Diagramm zurückgeben
-            fig = go.Figure()
-            fig.update_layout(
-                title="Keine Daten verfügbar",
-                xaxis_title="Datum",
-                yaxis_title="Preis pro Quadratfuß ($)"
-            )
-            return fig
-        
-        # Daten nach Monat gruppieren
-        df_clean['month_year'] = df_clean['SALE_DATE'].dt.to_period('M').dt.to_timestamp()
-        monthly_avg = df_clean.groupby('month_year')['PRICE_PER_SQFT'].mean().reset_index()
-        
-        # Plot erstellen
-        fig = px.line(monthly_avg, x='month_year', y='PRICE_PER_SQFT',
-                      title='Durchschnittlicher Preis pro Quadratfuß im Zeitverlauf',
-                      labels={'month_year': 'Datum', 'PRICE_PER_SQFT': 'Durchschnittspreis pro Quadratfuß ($)'},
-                      markers=True)
-        
-        fig.update_layout(
-            xaxis_title='Datum',
-            yaxis_title='Preis pro Quadratfuß ($)',
-            template='plotly_white'
-        )
-        
-        return fig
-    except Exception as e:
-        # Fehlerbehandlung
-        st.error(f"Fehler beim Erstellen des Diagramms: {str(e)}")
-        # Leeres Diagramm zurückgeben
-        fig = go.Figure()
-        fig.update_layout(
-            title=f"Fehler: {str(e)}",
-            xaxis_title="Datum",
-            yaxis_title="Preis pro Quadratfuß ($)"
-        )
-        return fig
-
 def plot_building_age_distribution(df):
     """
     Erstellt ein Histogramm zur Altersverteilung der verkauften Gebäude.
@@ -906,9 +846,6 @@ def plot_building_age_distribution(df):
         
         # Konvertierung mit Fehlerbehandlung
         df_clean['YEAR BUILT'] = pd.to_numeric(df_clean[year_col], errors='coerce')
-        
-        # Debug-Informationen
-        st.write(f"Anzahl gültiger YEAR BUILT Einträge: {df_clean['YEAR BUILT'].notna().sum()}")
         
         # NaN-Werte filtern
         df_clean = df_clean.dropna(subset=['YEAR BUILT'])
@@ -977,11 +914,7 @@ def plot_price_by_building_class(df):
         # Konvertierung mit Fehlerbehandlung
         df_clean['SALE PRICE'] = pd.to_numeric(df_clean[price_col], errors='coerce')
         
-        # Debug-Informationen
-        st.write(f"Anzahl gültiger SALE PRICE Einträge: {df_clean['SALE PRICE'].notna().sum()}")
-        st.write(f"Anzahl gültiger BUILDING CLASS CATEGORY Einträge: {df_clean[category_col].notna().sum()}")
-        
-        # NaN-Werte filtern
+                # NaN-Werte filtern
         df_clean = df_clean.dropna(subset=['SALE PRICE', category_col])
         
         # Prüfen ob noch Daten vorhanden sind
@@ -1123,10 +1056,7 @@ def create_dashboard():
     
     try:      
         # Anzeigen der Visualisierungen mit Fehlerbehandlung
-        with st.container():
-            st.header("Preis pro Quadratfuß im Zeitverlauf")
-            st.plotly_chart(plot_price_per_sqft_over_time(df), use_container_width=True)
-        
+       
         with st.container():
             st.header("Altersverteilung der verkauften Gebäude")
             st.plotly_chart(plot_building_age_distribution(df), use_container_width=True)
